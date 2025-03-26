@@ -14,7 +14,7 @@ import {
   signInWithEmailAndPassword,
   createUserWithEmailAndPassword 
 } from "firebase/auth";
-import { app } from "./firebase"; // Import your Firebase config
+import { app } from "./firebase";
 import "./Login.css";
 
 const Login = ({ onRegisterToggle }) => {
@@ -32,11 +32,9 @@ const Login = ({ onRegisterToggle }) => {
 
     try {
       if (isRegister) {
-        // Register new user
         await createUserWithEmailAndPassword(auth, email, password);
         alert("Registration successful!");
       } else {
-        // Login existing user
         await signInWithEmailAndPassword(auth, email, password);
         alert("Login successful!");
       }
@@ -51,10 +49,14 @@ const Login = ({ onRegisterToggle }) => {
         initial={{ opacity: 0, y: -50 }} 
         animate={{ opacity: 1, y: 0 }} 
         transition={{ duration: 0.8 }}
+        className="motion-div"
       >
         <Paper elevation={5} className="login-paper">
-          <Typography variant="h5" gutterBottom className="login-title">
-            {isRegister ? "HostelGo Register" : "HostelGo Login"}
+          <Typography variant="h4" className="login-title">
+            HoGo
+          </Typography>
+          <Typography variant="h6" className="login-subtitle">
+            {isRegister ? "Register" : "Login"}
           </Typography>
 
           {isRegister && (
@@ -101,7 +103,7 @@ const Login = ({ onRegisterToggle }) => {
             {isRegister ? "Register" : "Login"}
           </Button>
 
-          <Box sx={{ mt: 2 }}>
+          <Box sx={{ mt: 2, textAlign: "center" }}>
             <Link 
               component="button" 
               onClick={() => setIsRegister(!isRegister)}

@@ -18,4 +18,4 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 
 // Export the services you need
-export { auth, db };
+export { app, auth, db };
