@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { 
   TextField, 
   Button, 
@@ -6,40 +7,61 @@ import {
   Typography, 
   Paper,
   Link,
-  Box
+  Box,
+  Alert
 } from "@mui/material";
 import { motion } from "framer-motion";
 import { 
   getAuth, 
   signInWithEmailAndPassword,
-  createUserWithEmailAndPassword 
+  createUserWithEmailAndPassword,
+  onAuthStateChanged
 } from "firebase/auth";
 import { app } from "./firebase";
 import "./Login.css";
 
-const Login = ({ onRegisterToggle }) => {
+const Login = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [isRegister, setIsRegister] = useState(false);
   const [name, setName] = useState("");
+  const [error, setError] = useState("");
+  const [loading, setLoading] = useState(false);
+  const navigate = useNavigate();
   const auth = getAuth(app);
+
+  // Check auth state on component mount
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (user) => {
+      if (user) {
+        navigate('/dashboard'); // Redirect if already logged in
+      }
+    });
+    return unsubscribe; // Cleanup subscription
+  }, [auth, navigate]);
 
   const handleAuth = async () => {
     if (!email || !password) {
-      alert("Please enter both email and password");
+      setError("Please enter both email and password");
       return;
     }
+
+    setLoading(true);
+    setError("");
 
     try {
       if (isRegister) {
         await createUserWithEmailAndPassword(auth, email, password);
-        alert("Registration successful!");
+        alert("Registration successful! Please login.");
+        setIsRegister(false); // Switch back to login after registration
       } else {
         await signInWithEmailAndPassword(auth, email, password);
-        alert("Login successful!");
+        navigate('/dashboard'); // Redirect to dashboard after successful login
       }
     } catch (error) {
-      alert(`Error: ${error.message}`);
+      setError(error.message.replace("Firebase: ", ""));
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -59,6 +81,12 @@ const Login = ({ onRegisterToggle }) => {
             {isRegister ? "Register" : "Login"}
           </Typography>
 
+          {error && (
+            <Alert severity="error" sx={{ mb: 2 }}>
+              {error}
+            </Alert>
+          )}
+
           {isRegister && (
             <TextField
               label="Full Name"
@@ -68,6 +96,7 @@ const Login = ({ onRegisterToggle }) => {
               value={name}
               onChange={(e) => setName(e.target.value)}
               className="login-input"
+              disabled={loading}
             />
           )}
 
@@ -79,6 +108,7 @@ const Login = ({ onRegisterToggle }) => {
             value={email}
             onChange={(e) => setEmail(e.target.value)}
             className="login-input"
+            disabled={loading}
           />
 
           <TextField
@@ -90,6 +120,7 @@ const Login = ({ onRegisterToggle }) => {
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="login-input"
+            disabled={loading}
           />
 
           <Button
@@ -99,8 +130,9 @@ const Login = ({ onRegisterToggle }) => {
             onClick={handleAuth}
             className="login-button"
             sx={{ mt: 2 }}
+            disabled={loading}
           >
-            {isRegister ? "Register" : "Login"}
+            {loading ? "Processing..." : isRegister ? "Register" : "Login"}
           </Button>
 
           <Box sx={{ mt: 2, textAlign: "center" }}>
@@ -108,6 +140,7 @@ const Login = ({ onRegisterToggle }) => {
               component="button" 
               onClick={() => setIsRegister(!isRegister)}
               className="toggle-link"
+              disabled={loading}
             >
               {isRegister ? "Already have an account? Login" : "New user? Register"}
             </Link>
