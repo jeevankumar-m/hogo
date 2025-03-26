@@ -19,6 +19,7 @@ import {
 } from "@mui/icons-material";
 import { getAuth, signOut } from "firebase/auth";
 import { app } from "./firebase";
+import "./Dashboard.css";
 
 const Dashboard = () => {
   const navigate = useNavigate();
@@ -27,7 +28,7 @@ const Dashboard = () => {
   const handleLogout = async () => {
     try {
       await signOut(auth);
-      navigate("/"); // Add this line to redirect after sign-out
+      navigate("/");
     } catch (error) {
       console.error("Logout error:", error);
     }
@@ -61,7 +62,7 @@ const Dashboard = () => {
               color: "primary.main"
             }}
           >
-            HostelGo
+            HoGo
           </Typography>
           
           <Button
@@ -91,7 +92,7 @@ const Dashboard = () => {
           }}
         >
           <Typography variant="h4" component="h1" gutterBottom>
-            Welcome to HostelGo! 🎉
+            Welcome to HoGo! 🎉
           </Typography>
           <Typography variant="subtitle1" color="text.secondary">
             Select an option to proceed
@@ -100,8 +101,12 @@ const Dashboard = () => {
           <Grid container spacing={4} sx={{ mt: 4 }}>
             {features.map((feature, index) => (
               <Grid item xs={12} sm={6} key={index}>
-                <Card sx={{ height: '100%' }}>
+                <Card 
+                  sx={{ height: '100%' }} 
+                  className="card-hover-effect card-animation"
+                >
                   <CardActionArea 
+                    className="card-action-area"
                     sx={{ 
                       height: '100%',
                       display: 'flex',
@@ -111,8 +116,10 @@ const Dashboard = () => {
                     }}
                     onClick={() => navigate(feature.path)}
                   >
-                    {feature.icon}
-                    <CardContent>
+                    <Box className="card-icon">
+                      {feature.icon}
+                    </Box>
+                    <CardContent className="card-content">
                       <Typography gutterBottom variant="h5" component="div">
                         {feature.title}
                       </Typography>

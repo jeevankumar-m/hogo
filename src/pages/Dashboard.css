@@ -1,0 +1,77 @@
+/* Dashboard.css */
+
+/* Card animation on page load */
+@keyframes cardEntrance {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  /* Card hover effect */
+  .card-hover-effect {
+    transition: all 0.3s ease;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  }
+  
+  .card-hover-effect:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  }
+  
+  /* Individual card animations with staggered delay */
+  .card-animation:nth-child(1) {
+    animation: cardEntrance 0.6s ease-out 0.1s both;
+  }
+  
+  .card-animation:nth-child(2) {
+    animation: cardEntrance 0.6s ease-out 0.3s both;
+  }
+  
+  /* Icon animation on hover */
+  .card-icon {
+    transition: all 0.3s ease;
+    transform: scale(1);
+  }
+  
+  .card-hover-effect:hover .card-icon {
+    transform: scale(1.1);
+  }
+  
+  /* Button ripple effect */
+  .card-action-area::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: radial-gradient(circle, rgba(255,255,255,0.2) 1%, transparent 1%) center/15000%;
+    opacity: 0;
+    transition: opacity 0.5s, background-size 0.5s;
+  }
+  
+  .card-action-area:active::after {
+    background-size: 100%;
+    opacity: 1;
+    transition: background-size 0s;
+  }
+  
+  /* Content fade-in */
+  .card-content {
+    opacity: 0;
+    animation: fadeIn 0.5s ease-out 0.5s forwards;
+  }
+  
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+    }
+    to {
+      opacity: 1;
+    }
+  }
